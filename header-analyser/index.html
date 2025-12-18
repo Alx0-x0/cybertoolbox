@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Analyser - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    
+    <!-- Lien vers le CSS global -->
+    <link rel="stylesheet" href="../style.css">
+    <!-- Lien vers le CSS spécifique à l'outil (pour le cercle de score, timeline, etc.) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <a href="../index.html" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+                </a>
+            </div>
+            
+            <!-- Actions de navigation (Caché par défaut, affiché par JS après analyse) -->
+            <div id="navActions" class="nav-actions" style="justify-content: center; margin-bottom: 30px;">
+                <button class="nav-btn" onclick="resetAnalysis()">
+                    <i class="fa-solid fa-plus"></i> <span>Nouvelle Analyse</span>
+                </button>
+                <button class="nav-btn nav-btn-secondary" onclick="exportPDF()">
+                    <i class="fa-solid fa-file-pdf"></i> <span>Rapport PDF</span>
+                </button>
+            </div>
+
+            <h1>Email Header Analyser</h1>
+            <p class="subtitle">Analysez les en-têtes d'emails (SPF, DKIM, DMARC, Hops) pour détecter le phishing.</p>
+
+            <!-- Zone de saisie (Drag & Drop + Textarea) -->
+            <div id="inputSection" class="input-section">
+                <div style="text-align: center; margin-bottom: 1rem; color: #8b949e;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Glissez-déposez un fichier .eml / .txt ici ou collez les headers ci-dessous</p>
+                    <p style="font-size: 0.8rem; color: var(--success); margin-top: 5px; opacity: 0.9;"><i class="fa-solid fa-lock"></i> Analyse 100% locale (Client-Side) - Aucune donnée n'est envoyée au serveur.</p>
+                </div>
+                <textarea id="headerInput" placeholder="Collez les en-têtes bruts ici (Return-Path: ... Received: ...)..."></textarea>
+                <button class="btn" onclick="analyzeHeaders()">Analyser la sécurité</button>
+            </div>
+
+            <!-- Section Résultats (Gérée par script.js) -->
+            <div id="results">
+                <!-- Grille Dashboard -->
+                <div class="dashboard">
+                    <!-- Colonne Gauche : Score -->
+                    <div class="card score-container">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path id="scoreCirclePath" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <text x="18" y="20.35" class="percentage" id="scoreText">0%</text>
+                            </svg>
+                        </div>
+                        <div class="score-label">Niveau de Risque <span class="tooltip-trigger"><sup>*</sup><span class="tooltip-content">Le score est calculé automatiquement à titre indicatif. Il ne remplace pas une analyse humaine.</span></span></div>
+                        <div id="scoreVerdict" class="score-verdict">Analyse en cours...</div>
+                    </div>
+
+                    <!-- Colonne Droite : Métadonnées -->
+                    <div class="card analysis-card">
+                        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem;">
+                            <i class="fa-solid fa-circle-info"></i> Métadonnées
+                        </h3>
+                        <div class="detail-row"><div class="detail-label">Sujet</div><div class="detail-value" id="resSubject">-</div></div>
+                        <div class="detail-row"><div class="detail-label">De</div><div class="detail-value" id="resFrom">-</div></div>
+                        <div class="detail-row"><div class="detail-label">À</div><div class="detail-value" id="resTo">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Date</div><div class="detail-value" id="resDate">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Message-ID</div><div class="detail-value" id="resMessageId">-</div></div>
+                        <div class="detail-row" id="rowContentType"><div class="detail-label">Type</div><div class="detail-value" id="resContentType">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Désabo. <span class="tooltip-trigger"><sup>**</sup><span class="tooltip-content">Indique la présence d'un en-tête "List-Unsubscribe" pour se désabonner facilement.</span></span></div><div class="detail-value" id="resUnsub">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Return-Path</div><div class="detail-value" id="resReturn">-</div></div>
+                    </div>
+                </div>
+
+                <!-- Section Risques (Badge à part) -->
+                <div id="riskSection" class="risk-alert-box" style="display:none;">
+                    <h3 class="risk-title"><i class="fa-solid fa-triangle-exclamation"></i> Risques Identifiés <span class="tooltip-trigger"><sup>*</sup><span class="tooltip-content">Liste des indicateurs techniques suspects détectés dans les en-têtes.</span></span></h3>
+                    <div id="riskDetailsList" class="analysis-font"></div>
+                </div>
+
+                <!-- Authentification (Déplacé ici) -->
+                <div class="card analysis-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-shield-halved"></i> Authentification</h3>
+                    <div class="detail-row"><div class="detail-label" id="labelSPF">SPF</div><div class="detail-value" id="resSPF">-</div></div>
+                    <div class="detail-row"><div class="detail-label" id="labelDKIM">DKIM</div><div class="detail-value" id="resDKIM">-</div></div>
+                    <div class="detail-row"><div class="detail-label" id="labelDMARC">DMARC</div><div class="detail-value" id="resDMARC">-</div></div>
+                </div>
+
+                <!-- Timeline (Pleine largeur) -->
+                <div class="card analysis-card" style="margin-bottom: 2rem;">
+                    <h3 id="hopsTitle" style="margin-bottom: 1rem;"><i class="fa-solid fa-route"></i> Cheminement (Hops)</h3>
+                    <div class="timeline-wrapper">
+                        <div class="timeline" id="hopsTimeline"></div>
+                    </div>
+                </div>
+
+                <!-- Liste complète -->
+                <div class="card analysis-card">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-list"></i> Tous les En-têtes</h3>
+                    <div id="allHeadersContainer" class="analysis-font"></div>
+                </div>
+
+                <!-- Raw Headers (Badge en bas) -->
+                <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+                    <button class="raw-badge-btn" onclick="toggleRaw()">
+                        <i class="fa-solid fa-code"></i> Voir les en-têtes bruts (Raw)
+                    </button>
+                    <div id="rawHeaders" class="raw-headers" style="display:none; margin-top: 20px;"></div>
+                </div>
+
+                <!-- Footnotes -->
+                <div class="analysis-footnote">
+                    <p><sup>*</sup> Le score et les risques sont calculés automatiquement à titre indicatif. Ils ne remplacent pas une analyse humaine qualifiée.</p>
+                    <p><sup>**</sup> Indique la présence d'un en-tête "List-Unsubscribe" pour se désabonner facilement (courant dans les newsletters).</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

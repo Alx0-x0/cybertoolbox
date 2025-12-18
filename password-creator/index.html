@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Creator - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CryptoJS pour le hachage SHA-1 en HTTP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+            </a>
+
+            <h1>Password Creator</h1>
+            <p class="subtitle">Générez des mots de passe robustes et vérifiez leur intégrité.</p>
+
+            <div class="tool-interface">
+                
+                <!-- Générateur -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-gears"></i> Générateur</h3>
+                    
+                    <div class="password-display">
+                        <input type="text" id="generatedPassword" readonly placeholder="Cliquez sur Générer">
+                        <button onclick="copyToClipboard(document.getElementById('generatedPassword').value, this)" class="icon-btn" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <div class="controls">
+                        <div class="length-control" style="flex-direction: column; align-items: stretch;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <label for="lengthRange">Longueur :</label>
+                                <span id="lengthVal" style="color:var(--accent-color); font-weight:bold;">16</span>
+                            </div>
+                            <input type="range" id="lengthRange" min="1" max="256" value="16" oninput="document.getElementById('lengthVal').textContent = this.value">
+                        </div>
+                        <div class="checkboxes">
+                            <label><input type="checkbox" id="useUpper" checked> A-Z</label>
+                            <label><input type="checkbox" id="useNumbers" checked> 0-9</label>
+                            <label><input type="checkbox" id="excludeSimilar"> Exclure similaires (i, l, 1, L, o, 0, O)</label>
+                            <label><input type="checkbox" id="useSimpleSymbols" onchange="toggleSimpleSymbols()"> Symboles Simples (!?@*$)</label>
+                            <div class="symbol-group">
+                                <label><input type="checkbox" id="useSymbols" onchange="toggleComplexSymbols()"> Symboles</label>
+                                <div id="symbolConfig" class="symbol-config">
+                                    <input type="text" id="customSymbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?" class="symbol-input" placeholder="Symboles personnalisés">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Force & Estimation -->
+                    <div id="strengthMeter" class="strength-section" style="display:none;">
+                        <div class="strength-bar"><div id="strengthBarFill"></div></div>
+                        <div class="strength-text">
+                            <span id="strengthLabel">Force: -</span>
+                            <span id="pwnedStatus" style="display: none; color: var(--success); font-weight: bold;"></span>
+                        </div>
+                    </div>
+
+                    <button onclick="generateAndCheck()" class="btn-full">Générer & Vérifier</button>
+                </div>
+
+                <!-- Vérificateur de fuite -->
+                <div class="card" style="margin-top: 30px;">
+                    <h3><i class="fa-solid fa-user-shield"></i> Vérificateur de Fuite (Pwned Passwords)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 15px; margin-bottom: 20px;">Vérifie si le mot de passe est apparu dans une brèche de données connue (k-Anonymity).<br><span style="color: var(--success); opacity: 0.9;"><i class="fa-solid fa-lock"></i> Confidentialité :</span> Seuls les 5 premiers caractères du hash sont envoyés à l'API.</p>
+                    
+                    <div class="input-group-row">
+                        <input type="password" id="checkInput" placeholder="Entrez un mot de passe à vérifier...">
+                        <button onclick="checkLeak()" style="flex: 0 0 auto;">Vérifier</button>
+                    </div>
+                    
+                    <div id="leakResult" class="result-box" style="display:none;"></div>
+                </div>
+
+            </div>
+        </main>
+        <footer><p>&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Analyser - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    
+    <!-- Lien vers le CSS global -->
+    <link rel="stylesheet" href="../style.css">
+    <!-- Lien vers le CSS spécifique -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Lien retour vers l'accueil -->
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+            </a>
+
+            <h1>DNS Analyser</h1>
+            <p class="subtitle">Analysez les enregistrements DNS de n'importe quel domaine en temps réel.</p>
+
+            <!-- Zone de l'outil -->
+            <div class="tool-interface">
+                <form id="dnsForm">
+                    <div class="input-group-row">
+                        <input type="text" id="domainInput" placeholder="Entrez un domaine (ex: google.com)..." required>
+                        <input type="text" id="dkimSelector" placeholder="Sélecteur DKIM (opt.)">
+                    </div>
+                    <button type="submit" class="btn-full">Analyser</button>
+                </form>
+                
+                <p id="parsedDomain" style="display:none; margin-top: 10px; color: var(--text-light);">Domaine détecté : <span style="color: var(--accent-color);"></span></p>
+                
+                <!-- Historique -->
+                <div id="historyContainer" class="history-container"></div>
+                
+                <!-- Messages -->
+                <div id="errorMessage" class="error-message" style="display:none;"></div>
+                
+                <!-- Loader -->
+                <div id="loader" style="display:none; text-align: center; margin: 20px;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--accent-color);"></i>
+                </div>
+                
+                <!-- Résultats -->
+                <div id="resultsContainer" class="results-grid"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

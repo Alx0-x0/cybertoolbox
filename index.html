@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberToolBox by Alx0</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    <link rel="stylesheet" href="style.css">
+    <!-- Import d'une police "Tech" depuis Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Icônes (FontAwesome pour les visuels) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <h1>Sélectionnez un outil</h1>
+            <p class="subtitle">Suite d'outils d'analyse réseau et sécurité</p>
+
+            <div class="tools-grid">
+                <!-- Carte 1 : DNS Analyser -->
+                <a href="./dns-analyser/" class="tool-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h2>DNS Analyser</h2>
+                    <p>Analysez les enregistrements DNS, les serveurs de noms et la propagation.</p>
+                    <span class="status">En ligne</span>
+                </a>
+
+                <!-- Carte 2 : Geo IP -->
+                <a href="./geo-ip/" class="tool-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h2>Geo IP</h2>
+                    <p>Localisez géographiquement une adresse IP et obtenez des détails FAI.</p>
+                    <span class="status">En ligne</span>
+                </a>
+
+                <!-- Carte 3 : Header Analyser -->
+                <a href="./header-analyser/" class="tool-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h2>Header Analyser</h2>
+                    <p>Inspectez les en-têtes HTTP pour vérifier la sécurité et les configurations.</p>
+                    <span class="status">En ligne</span>
+                </a>
+
+                <!-- Carte 4 : Password Creator -->
+                <a href="./password-creator/" class="tool-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h2>Password Creator</h2>
+                    <p>Générez des mots de passe forts et vérifiez s'ils ont été compromis.</p>
+                    <span class="status">En ligne</span>
+                </a>
+
+                <!-- Carte 5 : Swiss Knife -->
+                <a href="./encoder-decoder/" class="tool-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-toolbox"></i>
+                    </div>
+                    <h2>Swiss Knife</h2>
+                    <p>Encodeurs, Décodeurs, Hachage, Chiffrement et Utilitaires divers.</p>
+                    <span class="status">En ligne</span>
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss Knife - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- CryptoJS (Fallback pour HTTP) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+            </a>
+
+            <h1>Swiss Knife</h1>
+            <p class="subtitle">Boîte à outils polyvalente pour développeurs et analystes.</p>
+
+            <!-- Navigation des onglets -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('base64')"><i class="fa-solid fa-font"></i> Base64</button>
+                <button class="tab-btn" onclick="openTab('json')"><i class="fa-solid fa-code"></i> JSON</button>
+                <button class="tab-btn" onclick="openTab('url')"><i class="fa-solid fa-link"></i> URL</button>
+                <button class="tab-btn" onclick="openTab('hash')"><i class="fa-solid fa-fingerprint"></i> Hash</button>
+                <button class="tab-btn" onclick="openTab('aes')"><i class="fa-solid fa-lock"></i> AES</button>
+                <button class="tab-btn" onclick="openTab('markdown')"><i class="fa-brands fa-markdown"></i> Markdown</button>
+            </div>
+
+            <div class="tool-interface">
+                
+                <!-- Base64 -->
+                <div id="base64" class="tab-content active">
+                    <h3>Base64 Encoder / Decoder</h3>
+                    <textarea id="b64Input" placeholder="Entrez votre texte ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processBase64('encode')">Encoder</button>
+                        <button onclick="processBase64('decode')">Décoder</button>
+                        <button onclick="copyOutput('b64Output', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> Copier</button>
+                    </div>
+                    <textarea id="b64Output" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <!-- JSON -->
+                <div id="json" class="tab-content">
+                    <h3>JSON Formatter / Validator</h3>
+                    <textarea id="jsonInput" placeholder="Collez votre JSON ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processJSON('format')">Formater (Beautify)</button>
+                        <button onclick="processJSON('minify')">Minifier</button>
+                        <button onclick="copyOutput('jsonOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> Copier</button>
+                    </div>
+                    <textarea id="jsonOutput" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <!-- URL -->
+                <div id="url" class="tab-content">
+                    <h3>URL Encoder / Decoder</h3>
+                    <textarea id="urlInput" placeholder="Entrez l'URL ou les paramètres..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processURL('encode')">Encoder</button>
+                        <button onclick="processURL('decode')">Décoder</button>
+                        <button onclick="copyOutput('urlOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> Copier</button>
+                    </div>
+                    <textarea id="urlOutput" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <!-- Hash -->
+                <div id="hash" class="tab-content">
+                    <h3>Hash Generator (SHA)</h3>
+                    <textarea id="hashInput" placeholder="Texte à hacher..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processHash('SHA-256')">SHA-256</button>
+                        <button onclick="processHash('SHA-512')">SHA-512</button>
+                        <button onclick="copyOutput('hashOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> Copier</button>
+                    </div>
+                    <div class="result-box" id="hashOutput">Le hash apparaîtra ici...</div>
+                </div>
+
+                <!-- AES -->
+                <div id="aes" class="tab-content">
+                    <h3>Text Encryptor (AES-GCM)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">Chiffrement sécurisé côté client. La clé est dérivée de votre mot de passe.</p>
+                    
+                    <input type="password" id="aesKey" placeholder="Clé secrète / Mot de passe" style="margin-bottom: 10px;">
+                    <textarea id="aesInput" placeholder="Texte à chiffrer ou JSON à déchiffrer..."></textarea>
+                    
+                    <div class="action-buttons">
+                        <button onclick="processAES('encrypt')">Chiffrer</button>
+                        <button onclick="processAES('decrypt')">Déchiffrer</button>
+                        <button onclick="copyOutput('aesOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> Copier</button>
+                    </div>
+                    <textarea id="aesOutput" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <!-- Markdown -->
+                <div id="markdown" class="tab-content">
+                    <h3>Markdown Previewer</h3>
+                    <div class="split-view">
+                        <div class="split-pane">
+                            <div class="pane-header">Markdown</div>
+                            <textarea id="mdInput" placeholder="# Titre\n\n**Gras** et *Italique*..." oninput="updateMarkdown()"></textarea>
+                        </div>
+                        <div class="split-pane">
+                            <div class="pane-header">Prévisualisation</div>
+                            <div id="mdOutput" class="markdown-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer><p>&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

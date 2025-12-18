@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geo IP - CyberToolBox</title>
+    
+    <!-- Lien vers le CSS global -->
+    <link rel="stylesheet" href="../style.css">
+    <!-- Lien vers le CSS spécifique -->
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Lien retour vers l'accueil -->
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+            </a>
+
+            <h1>Geo IP</h1>
+            <p class="subtitle">Localisez géographiquement une adresse IP et obtenez des détails FAI.</p>
+
+            <!-- Zone de l'outil -->
+            <div class="tool-interface">
+                <div class="search-box">
+                    <input type="text" id="ipInput" placeholder="Entrez une adresse IP (ex: 8.8.8.8)...">
+                    <button id="searchBtn">
+                        <span id="btnText">Localiser</span>
+                        <i id="btnLoader" class="fa-solid fa-circle-notch fa-spin" style="display:none;"></i>
+                    </button>
+                </div>
+
+                <div id="errorMsg" class="error-message" style="display:none;"></div>
+
+                <div class="results-grid">
+                    <!-- Carte IP -->
+                    <div class="geo-card geo-type-ip">
+                        <div class="geo-card-header">
+                            <h3><i class="fa-solid fa-network-wired"></i> Adresse IP</h3>
+                        </div>
+                        <div class="geo-card-body">
+                            <div class="geo-row main-row">
+                                <span id="displayIP" class="geo-value-highlight">---</span>
+                                <button id="copyBtn" class="copy-btn" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                            <div class="geo-row">
+                                <span class="geo-label">Type:</span> <span id="ipType" class="geo-badge">IPv4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Localisation -->
+                    <div class="geo-card geo-type-loc">
+                        <div class="geo-card-header">
+                            <h3><i class="fa-solid fa-location-dot"></i> Localisation</h3>
+                        </div>
+                        <div class="geo-card-body">
+                            <div class="geo-row">
+                                <span class="geo-label">Ville/Pays:</span>
+                                <span class="geo-badge-container"><img id="flag" src="" alt="" style="display:none; height: 14px; margin-right:5px;"><span id="displayLocation">---</span></span>
+                            </div>
+                            <div class="geo-row">
+                                <span class="geo-label">Région:</span> <span id="displayRegion" class="geo-badge">---</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte ISP -->
+                    <div class="geo-card geo-type-isp">
+                        <div class="geo-card-header">
+                            <h3><i class="fa-solid fa-server"></i> FAI (ISP)</h3>
+                        </div>
+                        <div class="geo-card-body">
+                            <div class="geo-row">
+                                <span class="geo-label">Org:</span> <span id="displayISP" class="geo-badge" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">---</span>
+                            </div>
+                            <div class="geo-row">
+                                <span class="geo-label">ASN:</span> <span id="displayASN" class="geo-badge">---</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Coordonnées -->
+                    <div class="geo-card geo-type-coords">
+                        <div class="geo-card-header">
+                            <h3><i class="fa-solid fa-compass"></i> Coordonnées</h3>
+                        </div>
+                        <div class="geo-card-body">
+                            <div class="geo-row">
+                                <span class="geo-label">GPS:</span> 
+                                <span class="geo-badge"><span id="displayLat">---</span>, <span id="displayLon">---</span></span>
+                            </div>
+                            <div class="geo-row">
+                                <span class="geo-label">Zone:</span> <span id="displayTimezone" class="geo-badge">---</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="map" class="map-container"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="script.js"></script>
+</body>
+</html>
