@@ -52,7 +52,7 @@ Ce projet est un site statique. Il ne nécessite **aucun serveur backend** (PHP,
 
 1. **Cloner le dépôt** :
    ```bash
-   git clone https://github.com/VOTRE_USERNAME/CyberToolBox.git
+   git clone https://github.com/Alx0-x0/cybertoolbox.git
    ```
 2. **Ouvrir le site** :
    - Double-cliquez simplement sur le fichier `index.html` à la racine.
