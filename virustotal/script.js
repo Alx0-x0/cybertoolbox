@@ -1,5 +1,6 @@
 let currentMode = 'file';
 const API_URL_BASE = 'https://www.virustotal.com/api/v3';
+const CORS_PROXY = 'https://api.codetabs.com/v1/proxy?quest=';
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -194,7 +195,9 @@ async function performScan() {
             endpoint = `/ip_addresses/${inputVal}`;
         }
 
-        const response = await fetch(`${API_URL_BASE}${endpoint}`, {
+        // Utilisation d'un proxy CORS pour contourner les restrictions du navigateur
+        const targetUrl = `${API_URL_BASE}${endpoint}`;
+        const response = await fetch(`${CORS_PROXY}${encodeURIComponent(targetUrl)}`, {
             method: 'GET',
             headers: {
                 'x-apikey': apiKey,
@@ -204,6 +207,7 @@ async function performScan() {
 
         if (!response.ok) {
             if (response.status === 401) throw new Error("Clé API invalide.");
+            if (response.status === 403) throw new Error("Accès refusé (Proxy ou Clé API).");
             if (response.status === 404) throw new Error("Ressource non trouvée sur VirusTotal (Jamais analysée ?).");
             if (response.status === 429) throw new Error("Quota API dépassé.");
             throw new Error(`Erreur API (${response.status})`);

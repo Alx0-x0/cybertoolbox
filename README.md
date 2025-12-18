@@ -74,6 +74,7 @@ Ce projet repose sur des APIs publiques gratuites :
 - **DNS** : Google DNS over HTTPS
 - **GeoIP** : ipwho.is, ipapi.co, geojs.io
 - **Fuites** : Have I Been Pwned API (Pwned Passwords)
+- **Proxy CORS** : CodeTabs (pour VirusTotal)
 
 ## 👤 Auteur
 
