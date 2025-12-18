@@ -27,7 +27,7 @@ Inspectez les en-têtes d'emails pour détecter le phishing et les problèmes de
 ### 4. 🔑 Password Creator
 Générez et auditez vos mots de passe.
 - **Générateur** : Longueur personnalisable (1-256), symboles, exclusion de caractères similaires.
-- **Audit de Force** : Calcul d'entropie et estimation du temps de crackage (simulation Superordinateur).
+- **Audit de Force** : Calcul d'entropie.
 - **Vérification de Fuite** : Vérifie si le mot de passe est compromis via l'API *Have I Been Pwned* (méthode sécurisée k-Anonymity).
 
 ### 5. 🛠️ Swiss Knife
@@ -71,4 +71,5 @@ Ce projet repose sur des APIs publiques gratuites :
 Développé par **Alx0**.
 
 ---
+
 *N'hésitez pas à mettre une étoile ⭐ sur le repo si cet outil vous est utile !*
