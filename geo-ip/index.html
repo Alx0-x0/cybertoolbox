@@ -25,6 +25,10 @@
                 <i class="fa-solid fa-terminal"></i> CyberToolBox
             </a>
             <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="github-hint">
+                    <span>Télécharge moi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
                 <a href="#" target="_blank" class="github-link" title="Voir le code source">
                     <i class="fa-brands fa-github"></i>
                 </a>
@@ -45,6 +49,7 @@
             <div class="tool-interface">
                 <div class="search-box">
                     <input type="text" id="ipInput" placeholder="Entrez une adresse IP (ex: 8.8.8.8)...">
+                    <button id="myIpBtn" title="Localiser mon IP publique" style="margin-right: 10px; padding: 0 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--accent-color); cursor: pointer;"><i class="fa-solid fa-house-signal"></i></button>
                     <button id="searchBtn">
                         <span id="btnText">Localiser</span>
                         <i id="btnLoader" class="fa-solid fa-circle-notch fa-spin" style="display:none;"></i>
@@ -130,5 +135,6 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="script.js"></script>
+    <script src="../transition.js"></script>
 </body>
 </html>

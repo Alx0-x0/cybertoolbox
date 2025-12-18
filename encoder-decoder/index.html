@@ -15,6 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- CryptoJS (Fallback pour HTTP) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- UA Parser JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/dist/ua-parser.min.js"></script>
 </head>
 <body>
 
@@ -24,6 +26,10 @@
                 <i class="fa-solid fa-terminal"></i> CyberToolBox
             </a>
             <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="github-hint">
+                    <span>Télécharge moi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
                 <a href="#" target="_blank" class="github-link" title="Voir le code source">
                     <i class="fa-brands fa-github"></i>
                 </a>
@@ -46,6 +52,10 @@
                 <button class="tab-btn" onclick="openTab('url')"><i class="fa-solid fa-link"></i> URL</button>
                 <button class="tab-btn" onclick="openTab('hash')"><i class="fa-solid fa-fingerprint"></i> Hash</button>
                 <button class="tab-btn" onclick="openTab('aes')"><i class="fa-solid fa-lock"></i> AES</button>
+                <button class="tab-btn" onclick="openTab('jwt')"><i class="fa-solid fa-id-card"></i> JWT</button>
+                <button class="tab-btn" onclick="openTab('timestamp')"><i class="fa-solid fa-clock"></i> Time</button>
+                <button class="tab-btn" onclick="openTab('cidr')"><i class="fa-solid fa-network-wired"></i> CIDR</button>
+                <button class="tab-btn" onclick="openTab('ua')"><i class="fa-solid fa-laptop-code"></i> UA</button>
                 <button class="tab-btn" onclick="openTab('markdown')"><i class="fa-brands fa-markdown"></i> Markdown</button>
             </div>
 
@@ -115,6 +125,57 @@
                     <textarea id="aesOutput" placeholder="Résultat..." readonly></textarea>
                 </div>
 
+                <!-- JWT Decoder -->
+                <div id="jwt" class="tab-content">
+                    <h3>JWT Decoder (Client-Side)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1rem;">Décodage sans vérification de signature. Aucune donnée n'est envoyée au serveur.</p>
+                    <textarea id="jwtInput" placeholder="Collez votre Token JWT (eyJ...) ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processJWT()">Décoder</button>
+                        <button onclick="document.getElementById('jwtInput').value = ''; document.getElementById('jwtOutput').value = '';">Effacer</button>
+                    </div>
+                    <textarea id="jwtOutput" placeholder="Header & Payload décodés..." readonly style="height: 300px; font-family: monospace;"></textarea>
+                </div>
+
+                <!-- Timestamp Converter -->
+                <div id="timestamp" class="tab-content">
+                    <h3>Unix Timestamp Converter</h3>
+                    
+                    <div class="input-group-row" style="align-items: center;">
+                        <input type="number" id="tsInput" placeholder="Timestamp (ex: 1672531200)">
+                        <button onclick="processTimestamp('to_date')" style="flex: 0 0 auto;">Vers Date <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="result-box" id="tsDateOutput" style="margin-bottom: 20px;">Résultat date...</div>
+
+                    <div class="input-group-row" style="align-items: center;">
+                        <input type="datetime-local" id="dateInput">
+                        <button onclick="processTimestamp('to_ts')" style="flex: 0 0 auto;">Vers Timestamp <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="result-box" id="tsOutput">Résultat timestamp...</div>
+                    <button onclick="document.getElementById('tsInput').value = Math.floor(Date.now() / 1000); processTimestamp('to_date');" class="btn-full" style="margin-top:10px;">Maintenant (Now)</button>
+                </div>
+
+                <!-- CIDR Calculator -->
+                <div id="cidr" class="tab-content">
+                    <h3>Calculateur CIDR / Sous-réseau</h3>
+                    <div class="input-group-row">
+                        <input type="text" id="cidrInput" placeholder="IP/Masque (ex: 192.168.1.1/24)">
+                        <button onclick="processCIDR()" style="flex: 0 0 auto;">Calculer</button>
+                    </div>
+                    <textarea id="cidrOutput" placeholder="Détails du réseau..." readonly style="height: 200px; font-family: monospace;"></textarea>
+                </div>
+
+                <!-- User Agent Parser -->
+                <div id="ua" class="tab-content">
+                    <h3>User Agent Parser</h3>
+                    <textarea id="uaInput" placeholder="Collez un User-Agent ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processUA()">Analyser</button>
+                        <button onclick="document.getElementById('uaInput').value = navigator.userAgent; processUA();">Mon Navigateur</button>
+                    </div>
+                    <textarea id="uaOutput" placeholder="Résultat..." readonly style="height: 200px; font-family: monospace;"></textarea>
+                </div>
+
                 <!-- Markdown -->
                 <div id="markdown" class="tab-content">
                     <h3>Markdown Previewer</h3>
@@ -136,5 +197,6 @@
         <footer><p>&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
     </div>
     <script src="script.js"></script>
+    <script src="../transition.js"></script>
 </body>
 </html>

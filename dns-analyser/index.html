@@ -22,6 +22,10 @@
                 <i class="fa-solid fa-terminal"></i> CyberToolBox
             </a>
             <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="github-hint">
+                    <span>Télécharge moi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
                 <a href="#" target="_blank" class="github-link" title="Voir le code source">
                     <i class="fa-brands fa-github"></i>
                 </a>
@@ -41,7 +45,11 @@
             <!-- Zone de l'outil -->
             <div class="tool-interface">
                 <form id="dnsForm">
-                    <div class="input-group-row">
+                    <div class="input-group-row dns-custom-layout">
+                        <select id="providerSelect">
+                            <option value="google">Google DNS</option>
+                            <option value="cloudflare">Cloudflare</option>
+                        </select>
                         <input type="text" id="domainInput" placeholder="Entrez un domaine (ex: google.com)..." required>
                         <input type="text" id="dkimSelector" placeholder="Sélecteur DKIM (opt.)">
                     </div>
@@ -71,5 +79,6 @@
         </footer>
     </div>
     <script src="script.js"></script>
+    <script src="../transition.js"></script>
 </body>
 </html>

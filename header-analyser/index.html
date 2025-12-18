@@ -22,6 +22,10 @@
                 <i class="fa-solid fa-terminal"></i> CyberToolBox
             </a>
             <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="github-hint">
+                    <span>Télécharge moi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
                 <a href="#" target="_blank" class="github-link" title="Voir le code source">
                     <i class="fa-brands fa-github"></i>
                 </a>
@@ -57,7 +61,7 @@
                     <p style="font-size: 0.8rem; color: var(--success); margin-top: 5px; opacity: 0.9;"><i class="fa-solid fa-lock"></i> Analyse 100% locale (Client-Side) - Aucune donnée n'est envoyée au serveur.</p>
                 </div>
                 <textarea id="headerInput" placeholder="Collez les en-têtes bruts ici (Return-Path: ... Received: ...)..."></textarea>
-                <button class="btn" onclick="analyzeHeaders()">Analyser la sécurité</button>
+                <button class="btn" onclick="analyzeHeaders()">Analyser</button>
             </div>
 
             <!-- Section Résultats (Gérée par script.js) -->
@@ -142,5 +146,6 @@
         </footer>
     </div>
     <script src="script.js"></script>
+    <script src="../transition.js"></script>
 </body>
 </html>

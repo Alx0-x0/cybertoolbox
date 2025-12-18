@@ -123,6 +123,7 @@ function updateStrength(password) {
     const meter = document.getElementById('strengthMeter');
     const bar = document.getElementById('strengthBarFill');
     const label = document.getElementById('strengthLabel');
+    const crackTimeLabel = document.getElementById('crackTime');
     
     meter.style.display = 'block';
     
@@ -149,6 +150,33 @@ function updateStrength(password) {
     bar.style.width = strength + '%';
     bar.style.backgroundColor = color;
     label.innerHTML = `Force: <span style="color:${color}">${text}</span> (${Math.round(entropy)} bits)`;
+
+    // Estimation du temps de craquage (Brute-force avec Supercalculateur ~1PH/s)
+    const combinations = Math.pow(poolSize, length);
+    const hashRate = 1_000_000_000_000_000; // 1 PetaHash/sec (Supercalculateur)
+    const seconds = combinations / hashRate;
+    
+    crackTimeLabel.innerHTML = `<i class="fa-solid fa-server"></i> Craquage estimé (Supercalculateur) : <span style="color:${color}">${formatTime(seconds)}</span>`;
+}
+
+function formatTime(seconds) {
+    if (seconds < 1) return "Instantané";
+    if (seconds < 60) return Math.round(seconds) + " secondes";
+    
+    const minutes = seconds / 60;
+    if (minutes < 60) return Math.round(minutes) + " minutes";
+    
+    const hours = minutes / 60;
+    if (hours < 24) return Math.round(hours) + " heures";
+    
+    const days = hours / 24;
+    if (days < 365) return Math.round(days) + " jours";
+    
+    const years = days / 365;
+    if (years < 1000) return Math.round(years) + " ans";
+    if (years < 1000000) return (years / 1000).toFixed(1) + " millénaires";
+    
+    return "Des éons (+1M années)";
 }
 
 // --- Leak Checker Logic (SHA-1 + k-Anonymity) ---

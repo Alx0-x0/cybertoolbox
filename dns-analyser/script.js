@@ -1,10 +1,10 @@
 // --- Configuration ---
 const RECORD_TYPES = ['A', 'AAAA', 'MX', 'TXT', 'CNAME', 'NS', 'SOA'];
-const API_BASE = 'https://dns.google/resolve';
 
 // --- DOM Elements ---
 const form = document.getElementById('dnsForm');
 const input = document.getElementById('domainInput');
+const providerSelect = document.getElementById('providerSelect');
 const dkimInput = document.getElementById('dkimSelector');
 const historyContainer = document.getElementById('historyContainer');
 const resultsContainer = document.getElementById('resultsContainer');
@@ -125,6 +125,14 @@ const createCard = (type, records, delay = 0) => {
 const analyzeSecurity = (txtRecords, dmarcRecords, dkimRecords, dkimSelector) => {
     const report = [];
 
+    // Helper pour nettoyer les guillemets de Cloudflare (et autres)
+    const cleanTXT = (data) => {
+        if (typeof data === 'string' && data.startsWith('"') && data.endsWith('"')) {
+            return data.slice(1, -1).replace(/\\"/g, '"');
+        }
+        return data;
+    };
+
     // --- Helpers de parsing ---
     const parseSPF = (txt) => {
         const parts = txt.split(' ');
@@ -161,30 +169,32 @@ const analyzeSecurity = (txtRecords, dmarcRecords, dkimRecords, dkimSelector) =>
     };
 
     // 1. SPF Analysis
-    const spfRecord = txtRecords ? txtRecords.find(r => r.data.startsWith('v=spf1')) : null;
+    const spfRecord = txtRecords ? txtRecords.find(r => cleanTXT(r.data).startsWith('v=spf1')) : null;
     if (spfRecord) {
+        const data = cleanTXT(spfRecord.data);
         let status = 'status-success';
         let msg = 'Valide';
-        if (spfRecord.data.includes('-all')) msg += ' (Strict)';
-        else if (spfRecord.data.includes('~all')) { msg += ' (SoftFail)'; status = 'status-warning'; }
-        else if (spfRecord.data.includes('?all')) { msg += ' (Neutral)'; status = 'status-warning'; }
-        else if (spfRecord.data.includes('+all')) { msg += ' (Permissive - Danger)'; status = 'status-danger'; }
+        if (data.includes('-all')) msg += ' (Strict)';
+        else if (data.includes('~all')) { msg += ' (SoftFail)'; status = 'status-warning'; }
+        else if (data.includes('?all')) { msg += ' (Neutral)'; status = 'status-warning'; }
+        else if (data.includes('+all')) { msg += ' (Permissive - Danger)'; status = 'status-danger'; }
         
-        report.push({ name: 'SPF', status, msg, data: spfRecord.data, details: parseSPF(spfRecord.data) });
+        report.push({ name: 'SPF', status, msg, data: data, details: parseSPF(data) });
     } else {
         report.push({ name: 'SPF', status: 'status-danger', msg: 'Manquant', data: 'Aucun enregistrement v=spf1 trouvé.', details: [] });
     }
 
     // 2. DMARC Analysis
     const dmarcRecord = dmarcRecords && dmarcRecords.length > 0 ? dmarcRecords[0] : null;
-    if (dmarcRecord && dmarcRecord.data.startsWith('v=DMARC1')) {
+    if (dmarcRecord && cleanTXT(dmarcRecord.data).startsWith('v=DMARC1')) {
+        const data = cleanTXT(dmarcRecord.data);
         let status = 'status-success';
         let msg = 'Valide';
-        if (dmarcRecord.data.includes('p=reject')) msg += ' (Reject - Sécurisé)';
-        else if (dmarcRecord.data.includes('p=quarantine')) { msg += ' (Quarantine)'; status = 'status-warning'; }
-        else if (dmarcRecord.data.includes('p=none')) { msg += ' (None - Observation)'; status = 'status-warning'; }
+        if (data.includes('p=reject')) msg += ' (Reject - Sécurisé)';
+        else if (data.includes('p=quarantine')) { msg += ' (Quarantine)'; status = 'status-warning'; }
+        else if (data.includes('p=none')) { msg += ' (None - Observation)'; status = 'status-warning'; }
         
-        report.push({ name: 'DMARC', status, msg, data: dmarcRecord.data, details: parseDMARC(dmarcRecord.data) });
+        report.push({ name: 'DMARC', status, msg, data: data, details: parseDMARC(data) });
     } else {
         report.push({ name: 'DMARC', status: 'status-danger', msg: 'Manquant', data: 'Aucun enregistrement _dmarc trouvé.', details: [] });
     }
@@ -192,9 +202,10 @@ const analyzeSecurity = (txtRecords, dmarcRecords, dkimRecords, dkimSelector) =>
     // 3. DKIM Analysis (si sélecteur fourni)
     if (dkimSelector) {
         const dkimRecord = dkimRecords && dkimRecords.length > 0 ? dkimRecords[0] : null;
-        if (dkimRecord && dkimRecord.data.includes('v=DKIM1')) {
+        if (dkimRecord && cleanTXT(dkimRecord.data).includes('v=DKIM1')) {
+            const data = cleanTXT(dkimRecord.data);
             // Parsing simple pour DKIM
-            const parts = dkimRecord.data.split(';').map(p => p.trim()).filter(p => p && !p.startsWith('v=DKIM1'));
+            const parts = data.split(';').map(p => p.trim()).filter(p => p && !p.startsWith('v=DKIM1'));
             const details = parts.map(part => {
                 const [k, ...vParts] = part.split('=');
                 const v = vParts.join('=');
@@ -202,9 +213,9 @@ const analyzeSecurity = (txtRecords, dmarcRecords, dkimRecords, dkimSelector) =>
                 if (k === 'p') return { label: 'Clé publique', val: 'Présente', info: 'Clé cryptographique' };
                 return { label: k, val: v, info: '' };
             });
-            report.push({ name: `DKIM (${dkimSelector})`, status: 'status-success', msg: 'Valide', data: dkimRecord.data, details: details });
+            report.push({ name: `DKIM (${dkimSelector})`, status: 'status-success', msg: 'Valide', data: data, details: details });
         } else if (dkimRecord) {
-                report.push({ name: `DKIM (${dkimSelector})`, status: 'status-warning', msg: 'Format incertain', data: dkimRecord.data, details: [] });
+                report.push({ name: `DKIM (${dkimSelector})`, status: 'status-warning', msg: 'Format incertain', data: cleanTXT(dkimRecord.data), details: [] });
         } else {
             report.push({ name: `DKIM (${dkimSelector})`, status: 'status-danger', msg: 'Introuvable', data: `Pas d'enregistrement pour ${dkimSelector}._domainkey`, details: [] });
         }
@@ -354,6 +365,18 @@ window.setInputAndSearch = (domain) => {
 // Init History
 loadHistory();
 
+// --- Auto-refresh on Provider Change ---
+providerSelect.addEventListener('change', () => {
+    if (input.value.trim()) {
+        // Feedback visuel (Animation)
+        providerSelect.classList.add('pulse-input');
+        setTimeout(() => providerSelect.classList.remove('pulse-input'), 600);
+        
+        // Relance l'analyse automatiquement
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+});
+
 // --- Main Logic ---
 
 form.addEventListener('submit', async (e) => {
@@ -385,11 +408,16 @@ form.addEventListener('submit', async (e) => {
     // 3. Loading
     loader.style.display = 'block';
 
+    // Configuration Provider
+    const provider = providerSelect.value;
+    const apiBase = provider === 'cloudflare' ? 'https://cloudflare-dns.com/dns-query' : 'https://dns.google/resolve';
+    const headers = { 'Accept': 'application/dns-json' }; // Requis pour Cloudflare, fonctionne pour Google
+
     try {
         // 4. Fetch Data (Parallel Requests)
         // On lance toutes les requêtes en même temps pour la performance
         const standardPromises = RECORD_TYPES.map(type => 
-            fetch(`${API_BASE}?name=${domain}&type=${type}`)
+            fetch(`${apiBase}?name=${domain}&type=${type}`, { headers })
                 .then(res => {
                     if (!res.ok) throw new Error(`Erreur API (${res.status})`);
                     return res.json();
@@ -398,11 +426,11 @@ form.addEventListener('submit', async (e) => {
         );
 
         // Requêtes Spécifiques Sécurité
-        const dmarcPromise = fetch(`${API_BASE}?name=_dmarc.${domain}&type=TXT`).then(r => r.json());
+        const dmarcPromise = fetch(`${apiBase}?name=_dmarc.${domain}&type=TXT`, { headers }).then(r => r.json());
         
         let dkimPromise = Promise.resolve({});
         if (dkimSelector) {
-            dkimPromise = fetch(`${API_BASE}?name=${dkimSelector}._domainkey.${domain}&type=TXT`).then(r => r.json());
+            dkimPromise = fetch(`${apiBase}?name=${dkimSelector}._domainkey.${domain}&type=TXT`, { headers }).then(r => r.json());
         }
 
         const [results, dmarcData, dkimData] = await Promise.all([

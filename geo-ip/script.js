@@ -7,6 +7,7 @@ let currentTileLayer;
 const dom = {
     ipInput: document.getElementById('ipInput'),
     searchBtn: document.getElementById('searchBtn'),
+    myIpBtn: document.getElementById('myIpBtn'),
     btnText: document.getElementById('btnText'),
     btnLoader: document.getElementById('btnLoader'),
     errorMsg: document.getElementById('errorMsg'),
@@ -220,6 +221,11 @@ window.addEventListener('DOMContentLoaded', () => {
 dom.searchBtn.addEventListener('click', () => {
     const ip = dom.ipInput.value.trim();
     getIPData(ip);
+});
+
+dom.myIpBtn.addEventListener('click', () => {
+    dom.ipInput.value = ''; // Vide le champ pour forcer la détection auto
+    getIPData('');
 });
 
 dom.ipInput.addEventListener('keypress', (e) => {

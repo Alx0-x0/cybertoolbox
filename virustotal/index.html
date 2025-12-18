@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirusTotal Scanner - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d0d0d%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%2300ff41%22 text-anchor=%22middle%22 dy=%22.35em%22>%3E_</text></svg>">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-terminal"></i> CyberToolBox
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="github-hint">
+                    <span>Télécharge moi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                <a href="#" target="_blank" class="github-link" title="Voir le code source">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <div class="author">by Alx0</div>
+            </div>
+        </header>
+
+        <main>
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour au Dashboard
+            </a>
+
+            <h1>VirusTotal Scanner</h1>
+            <p class="subtitle">Analysez la réputation de fichiers, URLs, domaines ou adresses IP.</p>
+
+            <!-- Conteneur de notifications (Toasts) -->
+            <div id="toastContainer"></div>
+
+            <div class="tool-interface">
+                
+                <!-- Barre de statut API (Nouveau Design) -->
+                <div class="api-status-bar">
+                    <div class="status-indicator">
+                        <div id="statusDot" class="status-dot"></div>
+                        <span id="statusText">Vérification de la clé API...</span>
+                    </div>
+                    <button onclick="toggleApiConfig()" class="btn-config"><i class="fa-solid fa-gear"></i> Configurer</button>
+                </div>
+
+                <!-- Panneau de configuration (Masqué par défaut) -->
+                <div id="apiConfigPanel" class="api-config-panel">
+                    <div class="input-group-row">
+                        <input type="password" id="apiKeyInput" placeholder="Collez votre clé API VirusTotal ici...">
+                        <button onclick="saveApiKey()" style="flex: 0 0 auto;">Enregistrer</button>
+                    </div>
+                    <p class="api-help">
+                        <i class="fa-solid fa-circle-info"></i> Une clé est requise. 
+                        <a href="https://www.virustotal.com/gui/my-apikey" target="_blank" class="api-link">Obtenir une clé gratuite ici ↗</a>
+                    </p>
+                </div>
+
+                <!-- Scanner -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> Scanner</h3>
+                    
+                    <div class="tabs" style="margin-bottom: 20px; justify-content: flex-start;">
+                        <button class="tab-btn active" onclick="setMode('file')"><i class="fa-solid fa-file"></i> Hash de Fichier</button>
+                        <button class="tab-btn" onclick="setMode('url')"><i class="fa-solid fa-link"></i> URL</button>
+                        <button class="tab-btn" onclick="setMode('domain')"><i class="fa-solid fa-globe"></i> Domaine</button>
+                        <button class="tab-btn" onclick="setMode('ip')"><i class="fa-solid fa-network-wired"></i> IP</button>
+                    </div>
+
+                    <!-- Zone de Drop pour Fichiers (Visible uniquement en mode 'file') -->
+                    <div id="dropZone" class="drop-zone">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                        <p>Glissez un fichier ici pour calculer son Hash (SHA-256)</p>
+                        <span class="drop-sub">Le fichier reste sur votre machine. Seul le hash est envoyé.</span>
+                    </div>
+
+                    <div class="input-group-row">
+                        <input type="text" id="searchInput" placeholder="Entrez le Hash (MD5/SHA1/SHA256)...">
+                        <button onclick="performScan()" id="scanBtn" style="flex: 0 0 auto;">Analyser</button>
+                    </div>
+
+                    <div id="loader" style="display:none; text-align: center; margin: 20px;">
+                        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--accent-color);"></i>
+                        <p style="margin-top: 10px; color: var(--text-light);">Interrogation de VirusTotal...</p>
+                    </div>
+
+                    <div id="errorMsg" class="error-message" style="display:none;"></div>
+
+                    <!-- Résultats -->
+                    <div id="resultContainer" style="display:none; margin-top: 20px;">
+                        <!-- En-tête Score -->
+                        <div class="vt-header-box" id="scoreBox">
+                            <div class="chart-container">
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path id="scoreCirclePath" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <text x="18" y="20.35" class="percentage" id="scoreText">0</text>
+                                </svg>
+                                <div class="chart-label">SCORE DE RISQUE</div>
+                            </div>
+                            <div class="vt-verdict-info">
+                                <h2 id="verdictText">Analyse terminée</h2>
+                                <div id="verdictSub" class="text-muted"></div>
+                                <div id="resTags" class="vt-tags-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- Grille d'infos principales -->
+                        <div class="vt-grid" id="mainInfoGrid"></div>
+
+                        <!-- Liste des détections (Antivirus) -->
+                        <div id="detectionSection" class="vt-section" style="display:none;">
+                            <h4 class="section-title error-text"><i class="fa-solid fa-bug"></i> Menaces Détectées</h4>
+                            <div id="detectionList" class="detection-grid"></div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <a href="#" id="vtLink" target="_blank" class="btn-action">Voir le rapport complet sur VirusTotal ↗</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer><p>&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="script.js"></script>
+    <script src="../transition.js"></script>
+</body>
+</html>

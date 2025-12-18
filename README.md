@@ -11,11 +11,13 @@ Analysez les enregistrements DNS de n'importe quel domaine en temps réel.
 - **Enregistrements supportés** : A, AAAA, MX, TXT, CNAME, NS, SOA.
 - **Sécurité** : Analyse automatique et validation des protocoles **SPF**, **DKIM** et **DMARC**.
 - **Géolocalisation** : Enrichissement automatique des IPs trouvées (A records).
+- **Multi-Provider** : Choix entre Google DNS et Cloudflare.
 
 ### 2. 🌍 Geo IP
 Localisez géographiquement une adresse IP.
 - **Détails** : Pays, Région, Ville, FAI (ISP), ASN, Timezone.
 - **Carte interactive** : Visualisation sur une carte (via Leaflet).
+- **Mon IP** : Détection automatique de votre adresse IP publique.
 - **Redondance** : Utilise plusieurs APIs pour garantir le résultat.
 
 ### 3. 📧 Header Analyser
@@ -27,15 +29,22 @@ Inspectez les en-têtes d'emails pour détecter le phishing et les problèmes de
 ### 4. 🔑 Password Creator
 Générez et auditez vos mots de passe.
 - **Générateur** : Longueur personnalisable (1-256), symboles, exclusion de caractères similaires.
-- **Audit de Force** : Calcul d'entropie.
+- **Audit de Force** : Calcul d'entropie et estimation du temps de craquage (Supercalculateur).
 - **Vérification de Fuite** : Vérifie si le mot de passe est compromis via l'API *Have I Been Pwned* (méthode sécurisée k-Anonymity).
 
 ### 5. 🛠️ Swiss Knife
 La boîte à outils du développeur.
-- **Encodeurs/Décodeurs** : Base64, URL.
-- **JSON** : Formatter, Minifier, Validator.
+- **Encodeurs/Décodeurs** : Base64, URL, JWT (JSON Web Token).
+- **Réseau** : Calculateur CIDR (Sous-réseaux), Analyseur User-Agent.
+- **Utilitaires** : Convertisseur Timestamp / Date, JSON Formatter/Minifier.
 - **Cryptographie** : Hachage (SHA-256, SHA-512), Chiffrement AES-GCM (compatible WebCrypto & CryptoJS).
 - **Markdown** : Éditeur avec prévisualisation en temps réel.
+
+### 6. 🦠 VirusTotal Scanner
+Analysez la réputation de fichiers et liens.
+- **Scan** : Fichiers (Hash calculé localement), URLs, Domaines, IPs.
+- **Interface** : Visualisation claire du score de risque et des détections antivirus.
+- **API** : Utilisation de votre propre clé API VirusTotal (stockée localement).
 
 ## 💻 Installation & Utilisation
 

@@ -192,6 +192,131 @@ async function processAES(action) {
     }
 }
 
+// --- JWT Decoder ---
+function processJWT() {
+    const input = document.getElementById('jwtInput').value.trim();
+    const output = document.getElementById('jwtOutput');
+    
+    if (!input) { output.value = ""; return; }
+
+    const parts = input.split('.');
+    if (parts.length !== 3) {
+        output.value = "Erreur : Format JWT invalide (doit contenir 3 parties séparées par des points).";
+        return;
+    }
+
+    try {
+        const decodePart = (str) => {
+            // Base64Url to Base64
+            let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            // Padding
+            while (base64.length % 4) base64 += '=';
+            // Decode
+            return JSON.parse(decodeURIComponent(escape(atob(base64))));
+        };
+
+        const header = decodePart(parts[0]);
+        const payload = decodePart(parts[1]);
+
+        output.value = "HEADER:\n" + JSON.stringify(header, null, 4) + 
+                       "\n\nPAYLOAD:\n" + JSON.stringify(payload, null, 4);
+    } catch (e) {
+        output.value = "Erreur lors du décodage : " + e.message;
+    }
+}
+
+// --- Timestamp Converter ---
+function processTimestamp(action) {
+    if (action === 'to_date') {
+        const ts = parseInt(document.getElementById('tsInput').value);
+        const out = document.getElementById('tsDateOutput');
+        if (isNaN(ts)) { out.textContent = "Timestamp invalide"; return; }
+        
+        // Gestion secondes vs millisecondes (si > année 3000, c'est probablement des ms)
+        const date = new Date(ts > 100000000000 ? ts : ts * 1000);
+        out.textContent = date.toLocaleString() + ` (ISO: ${date.toISOString()})`;
+    } else {
+        const dateVal = document.getElementById('dateInput').value;
+        const out = document.getElementById('tsOutput');
+        if (!dateVal) { out.textContent = "Date invalide"; return; }
+        
+        const date = new Date(dateVal);
+        const ts = Math.floor(date.getTime() / 1000);
+        out.textContent = ts;
+        // Copie auto dans l'input du haut pour faciliter la conversion inverse
+        document.getElementById('tsInput').value = ts;
+    }
+}
+
+// --- CIDR Calculator ---
+function processCIDR() {
+    const input = document.getElementById('cidrInput').value.trim();
+    const output = document.getElementById('cidrOutput');
+    
+    if (!input.match(/^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/)) {
+        output.value = "Format invalide. Utilisez le format IP/Masque (ex: 192.168.1.1/24)";
+        return;
+    }
+
+    const [ip, maskStr] = input.split('/');
+    const maskBits = maskStr ? parseInt(maskStr) : 32;
+    
+    if (maskBits < 0 || maskBits > 32) { output.value = "Masque invalide (0-32)."; return; }
+
+    // IP to Long (Unsigned)
+    const ipParts = ip.split('.').map(Number);
+    if (ipParts.some(p => p < 0 || p > 255)) { output.value = "IP invalide (octets 0-255)."; return; }
+    
+    // Calculs binaires (avec >>> 0 pour gérer le non-signé en JS)
+    const ipLong = ((ipParts[0] << 24) | (ipParts[1] << 16) | (ipParts[2] << 8) | ipParts[3]) >>> 0;
+    const maskLong = (maskBits === 0 ? 0 : (~0 << (32 - maskBits))) >>> 0;
+    const netLong = (ipLong & maskLong) >>> 0;
+    const broadLong = (netLong | (~maskLong)) >>> 0;
+    
+    const longToIp = (l) => [(l >>> 24) & 255, (l >>> 16) & 255, (l >>> 8) & 255, l & 255].join('.');
+
+    const netIp = longToIp(netLong);
+    const broadIp = longToIp(broadLong);
+    const maskIp = longToIp(maskLong);
+    
+    // Hôtes
+    const firstHost = (maskBits >= 31) ? 'N/A' : longToIp(netLong + 1);
+    const lastHost = (maskBits >= 31) ? 'N/A' : longToIp(broadLong - 1);
+    const totalHosts = (maskBits === 32) ? 1 : (maskBits === 31) ? 2 : Math.pow(2, 32 - maskBits) - 2;
+    const totalIps = Math.pow(2, 32 - maskBits);
+
+    output.value = 
+        `CIDR:          ${ip}/${maskBits}\n` +
+        `Masque:        ${maskIp}\n` +
+        `Réseau:        ${netIp}\n` +
+        `Broadcast:     ${broadIp}\n` +
+        `Premier Hôte:  ${firstHost}\n` +
+        `Dernier Hôte:  ${lastHost}\n` +
+        `Hôtes Utiles:  ${totalHosts.toLocaleString()}\n` +
+        `Total IPs:     ${totalIps.toLocaleString()}`;
+}
+
+// --- User Agent Parser ---
+function processUA() {
+    const input = document.getElementById('uaInput').value.trim();
+    const output = document.getElementById('uaOutput');
+    
+    if (!input) { output.value = ""; return; }
+
+    if (typeof UAParser === 'undefined') {
+        output.value = "Erreur : Librairie UAParser non chargée.";
+        return;
+    }
+
+    const parser = new UAParser(input);
+    const result = parser.getResult();
+
+    output.value = "NAVIGATEUR:\n" + JSON.stringify(result.browser, null, 4) +
+                   "\n\nSYSTÈME (OS):\n" + JSON.stringify(result.os, null, 4) +
+                   "\n\nAPPAREIL:\n" + JSON.stringify(result.device, null, 4) +
+                   "\n\nMOTEUR:\n" + JSON.stringify(result.engine, null, 4);
+}
+
 // --- Markdown ---
 function updateMarkdown() {
     const input = document.getElementById('mdInput').value;
