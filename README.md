@@ -60,7 +60,7 @@ Ce projet est un site statique. Il ne nécessite **aucun serveur backend** (PHP,
    ```
 2. **Ouvrir le site** :
    - Double-cliquez simplement sur le fichier `index.html` à la racine.
-   - Ou servez-le via un serveur local (ex: Live Server sur VS Code) pour une meilleure expérience.
+   - Ou servez-le via un serveur local pour une meilleure expérience.
 
 ## 🛠️ Technologies Utilisées
 
@@ -87,6 +87,7 @@ Développé par **Alx0**.
 ---
 
 *N'hésitez pas à mettre une étoile ⭐ sur le repo si cet outil vous est utile !*
+
 
 
 
