@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VirusTotal Scanner - Analysez URLs, domaines, IPs et fichiers">
+    <title>VirusTotal Scanner - CyberToolBox</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <h1>VirusTotal Scanner</h1>
+            <p class="subtitle" data-i18n="tool.vt.subtitle">Analysez URLs, domaines, IPs et hashes de fichiers via VirusTotal.</p>
+
+            <div class="tool-interface">
+                <!-- API Key Config (collapsible) -->
+                <div class="api-config-card card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-key"></i> <span data-i18n="tool.vt.api_key_title">Clé API</span></h3>
+                        <button type="button" id="toggle-api-config" class="btn btn-sm btn-ghost">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+
+                    <div id="api-config-content" class="api-config-content">
+                        <div class="api-inline-row">
+                            <input
+                                type="password"
+                                id="api-key"
+                                class="input"
+                                data-i18n-placeholder="tool.vt.api_key_ph"
+                                placeholder="Clé API VirusTotal..."
+                                autocomplete="off"
+                            >
+                            <button type="button" id="save-api-key" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                            <button type="button" id="clear-api-key" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <button type="button" id="test-api-key" class="btn btn-ghost btn-sm">
+                                <i class="fa-solid fa-flask"></i>
+                            </button>
+                        </div>
+                        <p class="config-help">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span data-i18n="tool.vt.config_help">Clé stockée localement.</span> <a href="https://www.virustotal.com/gui/home/upload" target="_blank" data-i18n="tool.vt.get_key">Obtenir une clé gratuite</a>
+                        </p>
+                        <div id="api-status" class="api-status"></div>
+                    </div>
+                </div>
+
+                <!-- Analysis Tool -->
+                <div class="analysis-card card" id="analysis-tool">
+                    <div class="analysis-inline-row">
+                        <input
+                            type="text"
+                            id="analysis-input"
+                            class="input"
+                            data-i18n-placeholder="tool.vt.input_ph"
+                            placeholder="URL, domaine, IP ou hash..."
+                            disabled
+                        >
+                        <button type="button" id="analyze-btn" class="btn btn-primary" disabled>
+                            <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="tool.vt.analyze">Analyser</span>
+                        </button>
+                    </div>
+
+                    <!-- History (inline, compact) -->
+                    <div id="history-section" class="history-inline" style="display: none;">
+                        <div class="history-inline-header">
+                            <span class="history-inline-label"><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="tool.vt.history">Historique</span></span>
+                            <button type="button" id="clear-history" class="btn-text-sm" data-i18n="tool.vt.clear">Effacer</button>
+                        </div>
+                        <div id="history-list" class="history-chips"></div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loading-state" class="loading-state" style="display: none;">
+                        <div class="spinner"></div>
+                        <p data-i18n="tool.vt.loading">Analyse en cours...</p>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="results-section" class="results-section" style="display: none;">
+                        <!-- Summary -->
+                        <div id="summary-card" class="summary-card"></div>
+
+                        <!-- Tabs -->
+                        <div class="tabs">
+                            <button type="button" class="tab-button active" data-tab="overview">
+                                <i class="fa-solid fa-eye"></i> <span data-i18n="tool.vt.overview">Aperçu</span>
+                            </button>
+                            <button type="button" class="tab-button" data-tab="details">
+                                <i class="fa-solid fa-list"></i> <span data-i18n="tool.vt.details">Détails</span>
+                            </button>
+                            <button type="button" class="tab-button" data-tab="vendors">
+                                <i class="fa-solid fa-shield"></i> <span data-i18n="tool.vt.vendors">Vendeurs</span>
+                            </button>
+                        </div>
+
+                        <!-- Overview Tab -->
+                        <div id="overview-tab" class="tab-content active">
+                            <div id="overview-content"></div>
+                        </div>
+
+                        <!-- Details Tab -->
+                        <div id="details-tab" class="tab-content">
+                            <div id="details-content"></div>
+                        </div>
+
+                        <!-- Vendors Tab -->
+                        <div id="vendors-tab" class="tab-content">
+                            <div id="vendors-content"></div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="empty-state">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <h4 data-i18n="tool.vt.empty_title">Aucune analyse pour le moment</h4>
+                        <p data-i18n="tool.vt.empty_desc">Configurez votre clé API et entrez une ressource à analyser pour commencer</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer><p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script type="module" src="./script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>

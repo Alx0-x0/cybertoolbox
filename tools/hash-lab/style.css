@@ -1,0 +1,115 @@
+.drop-zone {
+    border: 1.5px dashed var(--border-active);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    text-align: center;
+    margin-bottom: var(--space-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.drop-zone:hover,
+.drop-zone:focus-visible,
+.drop-zone.dragover {
+    border-color: var(--primary);
+    background: var(--primary-glow);
+}
+
+.drop-zone i {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.drop-zone p {
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.drop-zone span {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+}
+
+.browse-btn {
+    padding: 0.45rem 0.85rem;
+    box-shadow: none;
+    transform: none;
+}
+
+.selected-info {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+}
+
+.verify-row {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.verify-row input,
+.verify-row select {
+    margin-bottom: 0;
+}
+
+.hash-table {
+    margin-top: var(--space-md);
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.hash-row {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: var(--space-md);
+}
+
+.hash-row h3 {
+    margin-bottom: var(--space-sm);
+}
+
+.hash-item {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.hash-item code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    word-break: break-all;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 5px 8px;
+}
+
+.hash-item button {
+    padding: 4px 8px;
+    font-size: 11px;
+    box-shadow: none;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .verify-row {
+        grid-template-columns: 1fr;
+    }
+
+    .hash-item {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Analyser - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <h1>DNS Analyser</h1>
+            <p class="subtitle" data-i18n="tool.dns.subtitle">Analysez les enregistrements DNS de n'importe quel domaine en temps réel.</p>
+
+            <div class="tool-interface">
+                <form id="dnsForm">
+                    <div class="input-group-row dns-custom-layout">
+                        <select id="providerSelect">
+                            <option value="google">Google DNS</option>
+                            <option value="cloudflare">Cloudflare</option>
+                        </select>
+                        <input type="text" id="domainInput" data-i18n-placeholder="tool.dns.domain_ph" placeholder="Entrez un domaine (ex: google.com)..." required>
+                        <input type="text" id="dkimSelector" data-i18n-placeholder="tool.dns.dkim_ph" placeholder="Sélecteur DKIM (opt.)">
+                    </div>
+                    <button type="submit" class="btn-full" data-i18n="tool.dns.analyze">Analyser</button>
+                </form>
+
+                <p id="parsedDomain" style="display:none; margin-top: 10px; color: var(--text-tertiary);"><span data-i18n="tool.dns.detected_domain">Domaine détecté :</span> <span style="color: var(--primary);"></span></p>
+
+                <div id="historyContainer" class="history-container"></div>
+
+                <div id="errorMessage" class="error-message" style="display:none;"></div>
+
+                <div id="loader" style="display:none; text-align: center; margin: 20px;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem;"></i>
+                </div>
+
+                <div id="resultsContainer" class="results-grid"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

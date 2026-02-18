@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whois Lookup - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header id="tool-header-shell"></header>
+        <main>
+            <h1>Whois Lookup</h1>
+            <p class="subtitle" data-i18n="tool.whois.subtitle">Interrogez les données d'enregistrement WHOIS de n'importe quel domaine.</p>
+
+            <div class="tool-interface">
+                <div class="search-box">
+                    <input type="text" id="domainInput" data-i18n-placeholder="tool.whois.input_ph" placeholder="Entrez un domaine (ex: example.com)...">
+                    <button id="lookupBtn">
+                        <span id="btnText" data-i18n="tool.whois.lookup">Rechercher</span>
+                        <i id="btnLoader" class="fa-solid fa-circle-notch fa-spin" style="display:none;"></i>
+                    </button>
+                </div>
+
+                <div id="errorMsg" class="error-message" style="display:none;"></div>
+
+                <div id="results" class="whois-results" style="display:none;">
+                    <div class="whois-grid">
+                        <div class="whois-card">
+                            <div class="whois-card-header"><h3><i class="fa-solid fa-globe"></i> <span data-i18n="tool.whois.domain_name">Nom de domaine</span></h3></div>
+                            <div class="whois-card-body">
+                                <div class="whois-row main-row"><span id="displayDomain" class="whois-value-highlight">---</span></div>
+                                <div class="whois-row"><span class="whois-label" data-i18n="tool.whois.registrar">Registrar</span>: <span id="displayRegistrar" class="whois-badge">---</span></div>
+                            </div>
+                        </div>
+                        <div class="whois-card">
+                            <div class="whois-card-header"><h3><i class="fa-solid fa-calendar"></i> <span>Dates</span></h3></div>
+                            <div class="whois-card-body">
+                                <div class="whois-row"><span class="whois-label" data-i18n="tool.whois.creation">Création</span>: <span id="displayCreation" class="whois-badge">---</span></div>
+                                <div class="whois-row"><span class="whois-label" data-i18n="tool.whois.expiration">Expiration</span>: <span id="displayExpiration" class="whois-badge">---</span></div>
+                                <div class="whois-row"><span class="whois-label" data-i18n="tool.whois.updated">Mis à jour</span>: <span id="displayUpdated" class="whois-badge">---</span></div>
+                            </div>
+                        </div>
+                        <div class="whois-card">
+                            <div class="whois-card-header"><h3><i class="fa-solid fa-server"></i> <span data-i18n="tool.whois.nameservers">Serveurs DNS</span></h3></div>
+                            <div class="whois-card-body">
+                                <div id="displayNameservers" class="ns-list">---</div>
+                            </div>
+                        </div>
+                        <div class="whois-card">
+                            <div class="whois-card-header"><h3><i class="fa-solid fa-circle-info"></i> <span data-i18n="tool.whois.status">Statut</span></h3></div>
+                            <div class="whois-card-body">
+                                <div id="displayStatus" class="status-list">---</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card raw-section" style="margin-top: var(--space-md);">
+                        <h3 style="margin-bottom: var(--space-sm);"><i class="fa-solid fa-code"></i> Raw RDAP</h3>
+                        <pre id="rawOutput" class="raw-output"></pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer><p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>

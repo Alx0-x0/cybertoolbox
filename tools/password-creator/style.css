@@ -1,0 +1,142 @@
+/* Password Creator - Tool-specific styles (compact) */
+
+.card h3 {
+    color: var(--primary);
+    font-size: var(--text-base);
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-xs);
+}
+
+.password-display {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.password-display input {
+    margin-bottom: 0;
+    font-size: var(--text-base);
+    text-align: center;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.icon-btn {
+    padding: 0 var(--space-lg) !important;
+    font-size: var(--text-base) !important;
+    background: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+}
+
+.icon-btn:hover {
+    color: var(--primary) !important;
+    border-color: var(--border-active) !important;
+    background: var(--primary-glow) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    background: var(--bg-tertiary);
+    padding: var(--space-md);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+}
+
+.length-control {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-sm);
+}
+
+.checkboxes {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: var(--text-xs);
+}
+
+.checkboxes label {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.symbol-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.symbol-config {
+    transition: all var(--transition-normal);
+    opacity: 1;
+    max-height: 50px;
+    overflow: hidden;
+}
+
+.symbol-config.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.symbol-input {
+    padding: var(--space-xs) var(--space-sm) !important;
+    font-size: var(--text-xs) !important;
+    width: 100% !important;
+    max-width: 160px !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--primary) !important;
+    border-radius: var(--radius-lg) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    letter-spacing: 1px;
+    margin-bottom: 0 !important;
+}
+
+/* Strength Meter */
+.strength-section {
+    margin-bottom: var(--space-md);
+    background: var(--bg-tertiary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+}
+
+.strength-bar {
+    height: 5px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-xs);
+    overflow: hidden;
+}
+
+#strengthBarFill {
+    height: 100%;
+    width: 0%;
+    transition: width var(--transition-normal), background-color var(--transition-normal);
+    border-radius: var(--radius-full);
+}
+
+.strength-text {
+    font-size: var(--text-xs);
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,99 @@
+.search-box {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+.search-box input { flex: 1; margin-bottom: 0; }
+
+.whois-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+}
+
+.whois-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+}
+.whois-card:hover { border-color: var(--border-active); }
+
+.whois-card-header {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+}
+.whois-card-header h3 { font-size: var(--text-sm); color: var(--primary); }
+
+.whois-card-body { padding: var(--space-md); }
+
+.whois-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-xs) 0;
+    font-size: var(--text-sm);
+}
+.whois-row + .whois-row { border-top: 1px solid var(--border-color); }
+
+.main-row { justify-content: center; }
+
+.whois-value-highlight {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--primary);
+    word-break: break-all;
+}
+
+.whois-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.whois-badge {
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: var(--text-xs);
+    word-break: break-all;
+    text-align: right;
+}
+
+.ns-list, .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.ns-chip, .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+    word-break: break-all;
+}
+
+.raw-output {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    max-height: 300px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}

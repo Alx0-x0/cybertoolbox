@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tester - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header id="tool-header-shell"></header>
+        <main>
+            <h1>Regex Tester</h1>
+            <p class="subtitle" data-i18n="tool.regex.subtitle">Testez et débuguez vos expressions régulières en temps réel.</p>
+
+            <div class="tool-interface">
+                <!-- Presets -->
+                <div class="presets-section">
+                    <span class="presets-label" data-i18n="tool.regex.presets">Modèles courants</span>
+                    <div class="presets-chips">
+                        <button class="preset-chip" data-pattern="\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b" data-i18n="tool.regex.preset_ipv4">Adresse IPv4</button>
+                        <button class="preset-chip" data-pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" data-i18n="tool.regex.preset_email">Adresse email</button>
+                        <button class="preset-chip" data-pattern="https?://[^\\s/$.?#].[^\\s]*" data-i18n="tool.regex.preset_url">URL</button>
+                        <button class="preset-chip" data-pattern="(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}" data-i18n="tool.regex.preset_domain">Nom de domaine</button>
+                        <button class="preset-chip" data-pattern="([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}" data-i18n="tool.regex.preset_mac">Adresse MAC</button>
+                        <button class="preset-chip" data-pattern="CVE-\\d{4}-\\d{4,}" data-i18n="tool.regex.preset_cve">CVE-ID</button>
+                    </div>
+                </div>
+
+                <!-- Pattern input -->
+                <div class="regex-input-row">
+                    <span class="regex-slash">/</span>
+                    <input type="text" id="patternInput" data-i18n-placeholder="tool.regex.pattern_ph" placeholder="Expression régulière...">
+                    <span class="regex-slash">/</span>
+                    <div class="flags-input">
+                        <label class="flag-toggle"><input type="checkbox" id="flagG" checked><span>g</span></label>
+                        <label class="flag-toggle"><input type="checkbox" id="flagI"><span>i</span></label>
+                        <label class="flag-toggle"><input type="checkbox" id="flagM"><span>m</span></label>
+                        <label class="flag-toggle"><input type="checkbox" id="flagS"><span>s</span></label>
+                    </div>
+                </div>
+
+                <div id="regexError" class="error-message" style="display:none;"></div>
+
+                <!-- Test input -->
+                <textarea id="testInput" rows="10" data-i18n-placeholder="tool.regex.test_ph" placeholder="Texte de test..."></textarea>
+
+                <!-- Results -->
+                <div id="matchInfo" class="match-info" style="display:none;">
+                    <span class="match-count"><span id="matchCount">0</span> <span data-i18n="tool.regex.match_count">correspondance(s)</span></span>
+                </div>
+
+                <div id="highlightOutput" class="highlight-output"></div>
+
+                <div id="matchDetails" class="match-details" style="display:none;">
+                    <h3><i class="fa-solid fa-list"></i> <span data-i18n="tool.regex.matches">Correspondances</span></h3>
+                    <div id="matchList" class="match-list"></div>
+                </div>
+            </div>
+        </main>
+        <footer><p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>

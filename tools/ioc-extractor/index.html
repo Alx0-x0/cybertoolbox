@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOC Extractor - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <h1>IOC Extractor</h1>
+            <p class="subtitle" data-i18n="tool.ioc.subtitle">Extract and deduplicate IOCs from logs, alerts or reports.</p>
+
+            <div class="tool-interface">
+                <textarea id="inputText" rows="10" data-i18n-placeholder="tool.ioc.input_ph" placeholder="Paste logs, phishing email body, SIEM output, etc."></textarea>
+
+                <div class="action-buttons">
+                    <button type="button" id="extractBtn"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="tool.ioc.extract">Extract</span></button>
+                    <button type="button" id="sampleBtn"><i class="fa-solid fa-flask"></i> <span data-i18n="tool.ioc.sample">Sample</span></button>
+                    <button type="button" id="clearBtn"><i class="fa-solid fa-trash"></i> <span data-i18n="tool.ioc.clear">Clear</span></button>
+                    <button type="button" id="copyAllBtn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.ioc.copy_all">Copy all</span></button>
+                </div>
+
+                <div id="stats" class="stats-grid"></div>
+                <div id="results" class="results-grid"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>
+
+
+

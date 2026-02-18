@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CyberToolBox - Suite d'outils de cybersécurité et analyse réseau modernes et performants">
+    <meta name="theme-color" content="#6366f1">
+    <title>CyberToolBox - Suite d'Outils de Cybersécurité</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <!-- Apply theme before first paint to prevent flash -->
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/assets/styles/global.css">
+    <link rel="stylesheet" href="src/assets/styles/layout.css">
+    <link rel="stylesheet" href="src/assets/styles/home.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Page Transition Overlay -->
+    <div id="page-transition-overlay" class="page-transition-overlay">
+        <div class="transition-loader">
+            <div class="spinner-circle"></div>
+            <p class="transition-text">>_ Loading</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="layout-wrapper">
+        <!-- Header / Navigation -->
+        <header class="header">
+            <div class="container">
+                <div class="header-brand">
+                    <a href="/" class="logo">
+                        <i class="fa-solid fa-terminal"></i>
+                        <span>CyberToolBox</span>
+                    </a>
+                    <span class="logo-badge">v2.0</span>
+                </div>
+
+                <div class="header-actions">
+                    <a href="https://github.com/Alx0-x0/cybertoolbox" target="_blank" class="github-star-btn" title="Star on GitHub">
+                        <i class="fa-brands fa-github"></i>
+                        <span>Star</span>
+                        <i class="fa-solid fa-star star-icon"></i>
+                    </a>
+                    <div class="lang-switch" aria-label="Language switch">
+                        <button type="button" class="btn btn-ghost btn-sm" data-lang-btn="fr" data-i18n="lang.fr">FR</button>
+                        <button type="button" class="btn btn-ghost btn-sm" data-lang-btn="en" data-i18n="lang.en">EN</button>
+                    </div>
+                    <button id="theme-toggle" class="btn btn-ghost btn-sm" title="Basculer le thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tools Section -->
+            <section id="tools" class="tools-section">
+                <div class="container">
+                    <div class="filter-wrapper">
+                        <input
+                            type="text"
+                            id="tools-search"
+                            class="input tools-search"
+                            data-i18n-placeholder="home.search_placeholder"
+                            placeholder="Rechercher un outil..."
+                        >
+                        <i class="fa-solid fa-search search-icon"></i>
+                    </div>
+
+                    <div class="tools-grid" id="tools-grid">
+                        <!-- DNS Analyser -->
+                        <a href="tools/dns-analyser/" class="tool-card" data-category="network" data-tags="dns,réseau,analyse">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-server"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">DNS Analyser</h3>
+                                <p class="card-description" data-i18n="home.tool_dns_desc">Analysez les enregistrements DNS de n'importe quel domaine en temps réel.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-primary">
+                                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> <span data-i18n="home.badge_active">Actif</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Geo IP -->
+                        <a href="tools/geo-ip/" class="tool-card" data-category="network" data-tags="ip,géolocalisation,localisation">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-globe"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Geo IP</h3>
+                                <p class="card-description" data-i18n="home.tool_geo_desc">Localisez géographiquement une adresse IP et obtenez les détails de l'ISP.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-primary">
+                                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> <span data-i18n="home.badge_active">Actif</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Header Analyser -->
+                        <a href="tools/header-analyser/" class="tool-card" data-category="web" data-tags="http,headers,sécurité">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Header Analyser</h3>
+                                <p class="card-description" data-i18n="home.tool_header_desc">Inspectez les en-têtes HTTP pour vérifier la sécurité et les configurations.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-primary">
+                                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> <span data-i18n="home.badge_active">Actif</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Password Creator -->
+                        <a href="tools/password-creator/" class="tool-card" data-category="security" data-tags="password,générateur,sécurité">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Password Creator</h3>
+                                <p class="card-description" data-i18n="home.tool_password_desc">Générez des mots de passe forts et vérifiez s'ils ont été compromis.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-primary">
+                                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> <span data-i18n="home.badge_active">Actif</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Encoder Decoder -->
+                        <a href="tools/encoder-decoder/" class="tool-card" data-category="utilities" data-tags="encodage,decode,hashing">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Encoder/Decoder</h3>
+                                <p class="card-description" data-i18n="home.tool_encoder_desc">Encodeurs, Décodeurs, Hachage, Chiffrement et utilitaires divers.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-primary">
+                                        <i class="fa-solid fa-circle" style="font-size: 6px;"></i> <span data-i18n="home.badge_active">Actif</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- VirusTotal Scanner -->
+                        <a href="tools/virustotal/" class="tool-card" data-category="security" data-tags="virustotal,scan,reputation">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-virus-slash"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">VirusTotal Scanner</h3>
+                                <p class="card-description" data-i18n="home.tool_vt_desc">Analysez URLs, domaines, IPs et hashes de fichiers via VirusTotal.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- IOC Extractor -->
+                        <a href="tools/ioc-extractor/" class="tool-card" data-category="forensics" data-tags="ioc,threat-intel,logs,incident">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-crosshairs"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">IOC Extractor</h3>
+                                <p class="card-description" data-i18n="home.tool_ioc_desc">Extrayez automatiquement IP, domaines, URLs, hashes, emails et CVE depuis des logs.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Hash Lab -->
+                        <a href="tools/hash-lab/" class="tool-card" data-category="forensics" data-tags="hash,integrity,sha256,forensic">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-fingerprint"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Hash Lab</h3>
+                                <p class="card-description" data-i18n="home.tool_hash_desc">Calculez des empreintes SHA et verifiez l'integrite de vos fichiers.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="tools/defang-refang/" class="tool-card" data-category="utilities" data-tags="defang,refang,ioc,threat-intel">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-link-slash"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title" data-i18n="home.tool_defang_title">Defang / Refang</h3>
+                                <p class="card-description" data-i18n="home.tool_defang_desc">Neutralisez/réactivez rapidement des IOCs (URL, domaine, email, IP).</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Whois Lookup -->
+                        <a href="tools/whois-lookup/" class="tool-card" data-category="network" data-tags="whois,domain,registrar,dns,investigation">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-address-card"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Whois Lookup</h3>
+                                <p class="card-description" data-i18n="home.tool_whois_desc">Interrogez les données d'enregistrement WHOIS de n'importe quel domaine.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- CVE Lookup -->
+                        <a href="tools/cve-lookup/" class="tool-card" data-category="security" data-tags="cve,vulnerability,nvd,nist,exploit">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-bug"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">CVE Lookup</h3>
+                                <p class="card-description" data-i18n="home.tool_cve_desc">Recherchez des vulnérabilités CVE dans la base NIST NVD.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Regex Tester -->
+                        <a href="tools/regex-tester/" class="tool-card" data-category="utilities" data-tags="regex,regexp,pattern,test,soc,detection">
+                            <div class="card-header-icon">
+                                <i class="fa-solid fa-asterisk"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Regex Tester</h3>
+                                <p class="card-description" data-i18n="home.tool_regex_desc">Testez et débuguez vos expressions régulières en temps réel.</p>
+                                <div class="card-meta">
+                                    <span class="badge badge-success">
+                                        <i class="fa-solid fa-sparkles" style="font-size: 8px;"></i> <span data-i18n="home.badge_new">Nouveau</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div id="no-results" class="no-results" style="display: none;">
+                        <i class="fa-solid fa-search"></i>
+                        <p data-i18n="home.no_results">Aucun outil ne correspond à votre recherche.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer footer-minimal">
+            <div class="container">
+                <p>&copy; 2024 CyberToolBox. Créé avec <i class="fa-solid fa-heart"></i> par Alx0</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="src/js/utils/i18n.global.js"></script>
+    <script type="module">
+        import { PageTransition } from './src/js/components/transitions.js';
+        import { Navigation } from './src/js/components/navigation.js';
+        import { Theme } from './src/js/utils/helpers.js';
+
+        // Initialize
+        Theme.init();
+        window.CtbI18n?.init();
+        new Navigation();
+
+        // Tools search functionality
+        const searchInput = document.getElementById('tools-search');
+        const toolsGrid = document.getElementById('tools-grid');
+        const toolCards = toolsGrid.querySelectorAll('.tool-card');
+        const noResults = document.getElementById('no-results');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            let visibleCount = 0;
+
+            toolCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-description').textContent.toLowerCase();
+                const tags = card.getAttribute('data-tags').toLowerCase();
+
+                if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+        });
+    </script>
+</body>
+</html>
+

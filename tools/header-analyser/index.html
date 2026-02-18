@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Analyser - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <div id="navActions" class="nav-actions" style="justify-content: center; margin-bottom: 30px;">
+                <button class="nav-btn" onclick="resetAnalysis()">
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="tool.header.new_analysis">Nouvelle Analyse</span>
+                </button>
+                <button class="nav-btn nav-btn-secondary" onclick="exportPDF()">
+                    <i class="fa-solid fa-file-pdf"></i> <span data-i18n="tool.header.pdf_report">Rapport PDF</span>
+                </button>
+            </div>
+
+            <h1>Email Header Analyser</h1>
+            <p class="subtitle" data-i18n="tool.header.subtitle">Analysez les en-têtes d'emails (SPF, DKIM, DMARC, Hops) pour détecter le phishing.</p>
+
+            <div id="inputSection" class="input-section">
+                <div style="text-align: center; margin-bottom: 1rem; color: var(--text-tertiary);">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary);"></i>
+                    <p data-i18n="tool.header.drop_text">Glissez-déposez un fichier .eml / .txt ici ou collez les headers ci-dessous</p>
+                    <p style="font-size: 0.8rem; color: var(--success); margin-top: 5px; opacity: 0.9;"><i class="fa-solid fa-lock"></i> <span data-i18n="tool.header.local_analysis">Analyse 100% locale (Client-Side) - Aucune donnée n'est envoyée au serveur.</span></p>
+                </div>
+                <textarea id="headerInput" data-i18n-placeholder="tool.header.input_ph" placeholder="Collez les en-têtes bruts ici (Return-Path: ... Received: ...)..."></textarea>
+                <button class="btn" onclick="analyzeHeaders()" data-i18n="tool.header.analyze">Analyser</button>
+            </div>
+
+            <div id="results">
+                <div class="dashboard">
+                    <div class="card score-container">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path id="scoreCirclePath" class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <text x="18" y="20.35" class="percentage" id="scoreText">0%</text>
+                            </svg>
+                        </div>
+                        <div class="score-label"><span data-i18n="tool.header.risk_level">Niveau de Risque</span> <span class="tooltip-trigger"><sup>*</sup><span class="tooltip-content" data-i18n="tool.header.risk_tooltip">Le score est calculé automatiquement à titre indicatif. Il ne remplace pas une analyse humaine.</span></span></div>
+                        <div id="scoreVerdict" class="score-verdict" data-i18n="tool.header.analyzing">Analyse en cours...</div>
+                    </div>
+
+                    <div class="card analysis-card">
+                        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="tool.header.metadata">Métadonnées</span>
+                        </h3>
+                        <div class="detail-row"><div class="detail-label" data-i18n="tool.header.subject">Sujet</div><div class="detail-value" id="resSubject">-</div></div>
+                        <div class="detail-row"><div class="detail-label" data-i18n="tool.header.from">De</div><div class="detail-value" id="resFrom">-</div></div>
+                        <div class="detail-row"><div class="detail-label" data-i18n="tool.header.to">A</div><div class="detail-value" id="resTo">-</div></div>
+                        <div class="detail-row"><div class="detail-label" data-i18n="tool.header.date">Date</div><div class="detail-value" id="resDate">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Message-ID</div><div class="detail-value" id="resMessageId">-</div></div>
+                        <div class="detail-row" id="rowContentType"><div class="detail-label" data-i18n="tool.header.type">Type</div><div class="detail-value" id="resContentType">-</div></div>
+                        <div class="detail-row"><div class="detail-label"><span data-i18n="tool.header.unsub">Désabo.</span> <span class="tooltip-trigger"><sup>**</sup><span class="tooltip-content" data-i18n="tool.header.unsub_tooltip">Indique la présence d'un en-tête "List-Unsubscribe" pour se désabonner facilement.</span></span></div><div class="detail-value" id="resUnsub">-</div></div>
+                        <div class="detail-row"><div class="detail-label">Return-Path</div><div class="detail-value" id="resReturn">-</div></div>
+                    </div>
+                </div>
+
+                <div id="riskSection" class="risk-alert-box" style="display:none;">
+                    <h3 class="risk-title"><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="tool.header.risks_title">Risques Identifiés</span> <span class="tooltip-trigger"><sup>*</sup><span class="tooltip-content" data-i18n="tool.header.risks_tooltip">Liste des indicateurs techniques suspects détectés dans les en-têtes.</span></span></h3>
+                    <div id="riskDetailsList" class="analysis-font"></div>
+                </div>
+
+                <div class="card analysis-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="tool.header.auth">Authentification</span></h3>
+                    <div class="detail-row"><div class="detail-label" id="labelSPF">SPF</div><div class="detail-value" id="resSPF">-</div></div>
+                    <div class="detail-row"><div class="detail-label" id="labelDKIM">DKIM</div><div class="detail-value" id="resDKIM">-</div></div>
+                    <div class="detail-row"><div class="detail-label" id="labelDMARC">DMARC</div><div class="detail-value" id="resDMARC">-</div></div>
+                </div>
+
+                <div class="card analysis-card" style="margin-bottom: 2rem;">
+                    <h3 id="hopsTitle" style="margin-bottom: 1rem;"><i class="fa-solid fa-route"></i> <span data-i18n="tool.header.hops">Cheminement (Hops)</span></h3>
+                    <div class="timeline-wrapper">
+                        <div class="timeline" id="hopsTimeline"></div>
+                    </div>
+                </div>
+
+                <div class="card analysis-card">
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-list"></i> <span data-i18n="tool.header.all_headers">Tous les En-têtes</span></h3>
+                    <div id="allHeadersContainer" class="analysis-font"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+                    <button class="raw-badge-btn" onclick="toggleRaw()">
+                        <i class="fa-solid fa-code"></i> <span data-i18n="tool.header.raw_toggle">Voir les en-têtes bruts (Raw)</span>
+                    </button>
+                    <div id="rawHeaders" class="raw-headers" style="display:none; margin-top: 20px;"></div>
+                </div>
+
+                <div class="analysis-footnote">
+                    <p><sup>*</sup> <span data-i18n="tool.header.footnote_score">Le score et les risques sont calculés automatiquement à titre indicatif.</span></p>
+                    <p><sup>**</sup> <span data-i18n="tool.header.footnote_unsub">Indique la présence d'un en-tête "List-Unsubscribe" (courant dans les newsletters).</span></p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p>
+        </footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>

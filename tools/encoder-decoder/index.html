@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss Knife - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/dist/ua-parser.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <h1 data-i18n="tool.encoder.title">Swiss Knife</h1>
+            <p class="subtitle" data-i18n="tool.encoder.subtitle">Boîte à outils polyvalente pour développeurs et analystes.</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('base64')"><i class="fa-solid fa-font"></i> Base64</button>
+                <button class="tab-btn" onclick="openTab('json')"><i class="fa-solid fa-code"></i> JSON</button>
+                <button class="tab-btn" onclick="openTab('url')"><i class="fa-solid fa-link"></i> URL</button>
+                <button class="tab-btn" onclick="openTab('hash')"><i class="fa-solid fa-fingerprint"></i> Hash</button>
+                <button class="tab-btn" onclick="openTab('aes')"><i class="fa-solid fa-lock"></i> AES</button>
+                <button class="tab-btn" onclick="openTab('jwt')"><i class="fa-solid fa-id-card"></i> JWT</button>
+                <button class="tab-btn" onclick="openTab('timestamp')"><i class="fa-solid fa-clock"></i> <span data-i18n="tool.encoder.tab.time">Temps</span></button>
+                <button class="tab-btn" onclick="openTab('cidr')"><i class="fa-solid fa-network-wired"></i> CIDR</button>
+                <button class="tab-btn" onclick="openTab('ua')"><i class="fa-solid fa-laptop-code"></i> UA</button>
+                <button class="tab-btn" onclick="openTab('markdown')"><i class="fa-brands fa-markdown"></i> Markdown</button>
+            </div>
+
+            <div class="tool-interface">
+
+                <div id="base64" class="tab-content active">
+                    <h3 data-i18n="tool.encoder.h3_base64">Base64 Encodeur / Décodeur</h3>
+                    <textarea id="b64Input" data-i18n-placeholder="tool.encoder.input_ph" placeholder="Entrez votre texte ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processBase64('encode')" data-i18n="tool.encoder.encode">Encoder</button>
+                        <button onclick="processBase64('decode')" data-i18n="tool.encoder.decode">Décoder</button>
+                        <button onclick="copyOutput('b64Output', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.common.copy">Copier</span></button>
+                    </div>
+                    <textarea id="b64Output" data-i18n-placeholder="tool.encoder.result_ph" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <div id="json" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_json">JSON Formateur / Validateur</h3>
+                    <textarea id="jsonInput" data-i18n-placeholder="tool.encoder.json_ph" placeholder="Collez votre JSON ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processJSON('format')" data-i18n="tool.encoder.format">Formater (Beautify)</button>
+                        <button onclick="processJSON('minify')" data-i18n="tool.encoder.minify">Minifier</button>
+                        <button onclick="copyOutput('jsonOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.common.copy">Copier</span></button>
+                    </div>
+                    <textarea id="jsonOutput" data-i18n-placeholder="tool.encoder.result_ph" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <div id="url" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_url">URL Encodeur / Décodeur</h3>
+                    <textarea id="urlInput" data-i18n-placeholder="tool.encoder.url_ph" placeholder="Entrez l'URL ou les paramètres..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processURL('encode')" data-i18n="tool.encoder.encode">Encoder</button>
+                        <button onclick="processURL('decode')" data-i18n="tool.encoder.decode">Décoder</button>
+                        <button onclick="copyOutput('urlOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.common.copy">Copier</span></button>
+                    </div>
+                    <textarea id="urlOutput" data-i18n-placeholder="tool.encoder.result_ph" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <div id="hash" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_hash">Générateur de Hash (SHA)</h3>
+                    <textarea id="hashInput" data-i18n-placeholder="tool.encoder.hash_ph" placeholder="Texte à hacher..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processHash('SHA-256')">SHA-256</button>
+                        <button onclick="processHash('SHA-512')">SHA-512</button>
+                        <button onclick="copyOutput('hashOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.common.copy">Copier</span></button>
+                    </div>
+                    <div class="result-box" id="hashOutput" data-i18n="tool.encoder.hash_result">Le hash apparaîtra ici...</div>
+                </div>
+
+                <div id="aes" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_aes">Chiffreur de Texte (AES-GCM)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 1rem;" data-i18n="tool.encoder.aes_desc">Chiffrement sécurisé côté client. La clé est dérivée de votre mot de passe.</p>
+                    <input type="password" id="aesKey" data-i18n-placeholder="tool.encoder.aes_key_ph" placeholder="Clé secrète / Mot de passe" style="margin-bottom: 10px;">
+                    <textarea id="aesInput" data-i18n-placeholder="tool.encoder.aes_input_ph" placeholder="Texte à chiffrer ou JSON à déchiffrer..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processAES('encrypt')" data-i18n="tool.encoder.encrypt">Chiffrer</button>
+                        <button onclick="processAES('decrypt')" data-i18n="tool.encoder.decrypt">Déchiffrer</button>
+                        <button onclick="copyOutput('aesOutput', this)" class="copy-btn"><i class="fa-regular fa-copy"></i> <span data-i18n="tool.common.copy">Copier</span></button>
+                    </div>
+                    <textarea id="aesOutput" data-i18n-placeholder="tool.encoder.result_ph" placeholder="Résultat..." readonly></textarea>
+                </div>
+
+                <div id="jwt" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_jwt">Décodeur JWT (Client-Side)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 1rem;" data-i18n="tool.encoder.jwt_desc">Décodage sans vérification de signature. Aucune donnée n'est envoyée au serveur.</p>
+                    <textarea id="jwtInput" data-i18n-placeholder="tool.encoder.jwt_ph" placeholder="Collez votre Token JWT (eyJ...) ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processJWT()" data-i18n="tool.encoder.decode">Décoder</button>
+                        <button onclick="document.getElementById('jwtInput').value = ''; document.getElementById('jwtOutput').value = '';" data-i18n="tool.encoder.clear">Effacer</button>
+                    </div>
+                    <textarea id="jwtOutput" data-i18n-placeholder="tool.encoder.jwt_output_ph" placeholder="Header & Payload décodés..." readonly style="height: 300px; font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>
+
+                <div id="timestamp" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_timestamp">Convertisseur Unix Timestamp</h3>
+                    <div class="input-group-row" style="align-items: center;">
+                        <input type="number" id="tsInput" data-i18n-placeholder="tool.encoder.ts_ph" placeholder="Timestamp (ex: 1672531200)">
+                        <button onclick="processTimestamp('to_date')" style="flex: 0 0 auto;"><span data-i18n="tool.encoder.to_date">Vers Date</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="result-box" id="tsDateOutput" style="margin-bottom: 20px;" data-i18n="tool.encoder.result_date">Résultat date...</div>
+                    <div class="input-group-row" style="align-items: center;">
+                        <input type="datetime-local" id="dateInput">
+                        <button onclick="processTimestamp('to_ts')" style="flex: 0 0 auto;"><span data-i18n="tool.encoder.to_ts">Vers Timestamp</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="result-box" id="tsOutput" data-i18n="tool.encoder.result_ts">Résultat timestamp...</div>
+                    <button onclick="document.getElementById('tsInput').value = Math.floor(Date.now() / 1000); processTimestamp('to_date');" class="btn-full" style="margin-top:10px;" data-i18n="tool.encoder.now">Maintenant (Now)</button>
+                </div>
+
+                <div id="cidr" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_cidr">Calculateur CIDR / Sous-réseau</h3>
+                    <div class="input-group-row">
+                        <input type="text" id="cidrInput" data-i18n-placeholder="tool.encoder.cidr_ph" placeholder="IP/Masque (ex: 192.168.1.1/24)">
+                        <button onclick="processCIDR()" style="flex: 0 0 auto;" data-i18n="tool.encoder.compute">Calculer</button>
+                    </div>
+                    <textarea id="cidrOutput" data-i18n-placeholder="tool.encoder.cidr_output_ph" placeholder="Détails du réseau..." readonly style="height: 200px; font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>
+
+                <div id="ua" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_ua">Analyseur User Agent</h3>
+                    <textarea id="uaInput" data-i18n-placeholder="tool.encoder.ua_ph" placeholder="Collez un User-Agent ici..."></textarea>
+                    <div class="action-buttons">
+                        <button onclick="processUA()" data-i18n="tool.encoder.analyze">Analyser</button>
+                        <button onclick="document.getElementById('uaInput').value = navigator.userAgent; processUA();" data-i18n="tool.encoder.my_browser">Mon Navigateur</button>
+                    </div>
+                    <textarea id="uaOutput" data-i18n-placeholder="tool.encoder.ua_output_ph" placeholder="Résultat..." readonly style="height: 200px; font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>
+
+                <div id="markdown" class="tab-content">
+                    <h3 data-i18n="tool.encoder.h3_markdown">Prévisualiseur Markdown</h3>
+                    <div class="split-view">
+                        <div class="split-pane">
+                            <div class="pane-header">Markdown</div>
+                            <textarea id="mdInput" data-i18n-placeholder="tool.encoder.md_ph" placeholder="# Titre\n\n**Gras** et *Italique*..." oninput="updateMarkdown()"></textarea>
+                        </div>
+                        <div class="split-pane">
+                            <div class="pane-header" data-i18n="tool.encoder.preview">Prévisualisation</div>
+                            <div id="mdOutput" class="markdown-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer><p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>

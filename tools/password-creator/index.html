@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Creator - CyberToolBox</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><style>@media(prefers-color-scheme:light){rect{fill:%23f8fafc}text{fill:%236366f1}}</style></defs><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23030712%22/><text x=%2250%22 y=%2250%22 font-family=%22monospace%22 font-weight=%22bold%22 font-size=%2260%22 fill=%22%23818cf8%22 text-anchor=%22middle%22 dy=%22.35em%22>&gt;_</text></svg>">
+
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <link rel="stylesheet" href="../_shared/style.css">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header id="tool-header-shell"></header>
+
+        <main>
+            <h1>Password Creator</h1>
+            <p class="subtitle" data-i18n="tool.password.subtitle">Générez des mots de passe robustes et vérifiez leur intégrité.</p>
+
+            <div class="tool-interface">
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-gears"></i> <span data-i18n="tool.password.generator">Générateur</span></h3>
+
+                    <div class="password-display">
+                        <input type="text" id="generatedPassword" readonly data-i18n-placeholder="tool.password.gen_placeholder" placeholder="Cliquez sur Générer">
+                        <button onclick="copyToClipboard(document.getElementById('generatedPassword').value, this)" class="icon-btn" data-i18n-title="tool.common.copy" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <div class="controls">
+                        <div class="length-control" style="flex-direction: column; align-items: stretch;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <label for="lengthRange" data-i18n="tool.password.length">Longueur :</label>
+                                <span id="lengthVal" style="color:var(--primary); font-weight:bold;">16</span>
+                            </div>
+                            <input type="range" id="lengthRange" min="1" max="256" value="16" oninput="document.getElementById('lengthVal').textContent = this.value">
+                        </div>
+                        <div class="checkboxes">
+                            <label><input type="checkbox" id="useUpper" checked> A-Z</label>
+                            <label><input type="checkbox" id="useNumbers" checked> 0-9</label>
+                            <label><input type="checkbox" id="excludeSimilar"> <span data-i18n="tool.password.exclude_similar">Exclure similaires (i, l, 1, L, o, 0, O)</span></label>
+                            <label><input type="checkbox" id="useSimpleSymbols" onchange="toggleSimpleSymbols()"> <span data-i18n="tool.password.simple_symbols">Symboles Simples (!?@*$)</span></label>
+                            <div class="symbol-group">
+                                <label><input type="checkbox" id="useSymbols" onchange="toggleComplexSymbols()"> <span data-i18n="tool.password.symbols">Symboles</span></label>
+                                <div id="symbolConfig" class="symbol-config">
+                                    <input type="text" id="customSymbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?" class="symbol-input" data-i18n-placeholder="tool.password.custom_symbols_ph" placeholder="Symboles personnalisés">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="strengthMeter" class="strength-section" style="display:none;">
+                        <div class="strength-bar"><div id="strengthBarFill"></div></div>
+                        <div class="strength-text">
+                            <span id="strengthLabel">Force: -</span>
+                            <span id="pwnedStatus" style="display: none; color: var(--success); font-weight: bold;"></span>
+                        </div>
+                        <div id="crackTime" style="font-size: 0.85rem; color: var(--text-tertiary); margin-top: 5px; font-style: italic;"></div>
+                    </div>
+
+                    <button onclick="generateAndCheck()" class="btn-full" data-i18n="tool.password.generate_check">Générer & Vérifier</button>
+                </div>
+
+                <div class="card" style="margin-top: 12px;">
+                    <h3><i class="fa-solid fa-user-shield"></i> <span data-i18n="tool.password.leak_checker">Vérificateur de Fuite (Pwned Passwords)</span></h3>
+                    <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 15px; margin-bottom: 20px;"><span data-i18n="tool.password.leak_desc">Vérifie si le mot de passe est apparu dans une brèche de données connue (k-Anonymity).</span><br><span style="color: var(--success); opacity: 0.9;"><i class="fa-solid fa-lock"></i> <span data-i18n="tool.password.leak_privacy">Confidentialité :</span></span> <span data-i18n="tool.password.leak_privacy_detail">Seuls les 5 premiers caractères du hash sont envoyés.</span></p>
+
+                    <div class="input-group-row">
+                        <input type="password" id="checkInput" data-i18n-placeholder="tool.password.check_ph" placeholder="Entrez un mot de passe à vérifier...">
+                        <button onclick="checkLeak()" style="flex: 0 0 auto;" data-i18n="tool.password.check_btn">Vérifier</button>
+                    </div>
+
+                    <div id="leakResult" class="result-box" style="display:none;"></div>
+                </div>
+
+            </div>
+        </main>
+        <footer><p data-i18n="tool.common.footer">&copy; 2024 CyberToolBox. Développé par Alx0.</p></footer>
+    </div>
+    <script src="../../src/js/utils/i18n.global.js"></script>
+    <script src="../_shared/tool-shell.js"></script>
+    <script src="script.js"></script>
+    <script src="../_shared/transition.js"></script>
+</body>
+</html>
